@@ -1,0 +1,28 @@
+<h1>Musician Market</h1>
+
+<%= link_to "Sell Instrument", new_listing_path%>
+<button data-stripe="donate">Donate $10</button>
+
+<ul>
+    <% for listing in @listings %>
+    <li>
+        <%= link_to "#{listing.title} - #{number_to_currency(listing.price)}", listing_path(listing.id) %>
+    </li>
+    <% end %>
+</ul>
+
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  document
+    .querySelector("[data-stripe='donate']")
+    .addEventListener("click", () => {
+      const stripe = Stripe(
+        "<%= Rails.application.credentials.dig(:stripe, :public_key) %>"
+      );
+
+      stripe.redirectToCheckout({
+        sessionId: "<%= @session_id %>"
+      });
+    });
+</script>
